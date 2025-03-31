@@ -5,7 +5,7 @@ set -eo pipefail
 if ! [ -x "$(command -v sqlx)" ]; then
   echo >&2 "Error: sqlx is not installed."
   echo >&2 "Use:"
-  echo >&2 "    cargo install --version=0.5.7 sqlx-cli --no-default-features --features postgres"
+  echo >&2 "    cargo install --version=0.8.3 sqlx-cli --no-default-features --features postgres"
   echo >&2 "to install it."
   exit 1
 fi
@@ -21,10 +21,10 @@ APP_DB_NAME="${APP_DB_NAME:=newsletter}"
 if [[ -z "${SKIP_DOCKER}" ]]
 then
   # if a postgres container is running, print instructions to kill it and exit
-  RUNNING_POSTGRES_CONTAINER=$(docker ps --filter 'name=postgres' --format '{{.ID}}')
+  RUNNING_POSTGRES_CONTAINER=$(podman ps --filter 'name=postgres' --format '{{.ID}}')
   if [[ -n $RUNNING_POSTGRES_CONTAINER ]]; then
     echo >&2 "there is a postgres container already running, kill it with"
-    echo >&2 "    docker kill ${RUNNING_POSTGRES_CONTAINER}"
+    echo >&2 "    podman kill ${RUNNING_POSTGRES_CONTAINER}"
     exit 1
   fi
   CONTAINER_NAME="postgres_$(date '+%s')"
