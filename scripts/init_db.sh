@@ -63,6 +63,10 @@ fi
 
 # Create the application database
 DATABASE_URL=postgres://${APP_USER}:${APP_USER_PWD}@localhost:${DB_PORT}/${APP_DB_NAME}
+
+# create the .env file
+echo "DATABASE_URL=$DATABASE_URL" > .env
+
 export DATABASE_URL
 sqlx database create
 sqlx migrate run
