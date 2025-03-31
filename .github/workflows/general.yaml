@@ -23,13 +23,18 @@ jobs:
           POSTGRES_DB: postgres
         ports:
           - 5432:5432
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
       - name: Install the Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
       - name: Install sqlx-cli
-        run: cargo install sqlx-cli
+        run:
+          cargo install sqlx-cli
           --version=${{ env.SQLX_VERSION }}
           --features ${{ env.SQLX_FEATURES }}
           --no-default-features
@@ -67,12 +72,36 @@ jobs:
   clippy:
     name: Clippy
     runs-on: ubuntu-latest
+    env:
+      SQLX_OFFLINE: true
+    services:
+      postgres:
+        image: postgres:alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
     steps:
       - uses: actions/checkout@v4
       - name: Install the Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           components: clippy
+      - name: Create app user in Postgres
+        run: |
+          sudo apt-get install postgresql-client
+
+          # Create the application user
+          CREATE_QUERY="CREATE USER ${APP_USER} WITH PASSWORD '${APP_USER_PWD}';"
+          PGPASSWORD="password" psql -U "postgres" -h "localhost" -c "${CREATE_QUERY}"
+
+          # Grant create db privileges to the app user
+          GRANT_QUERY="ALTER USER ${APP_USER} CREATEDB;"
+          PGPASSWORD="password" psql -U "postgres" -h "localhost" -c "${GRANT_QUERY}"
+      - name: Migrate database
+        run: SKIP_DOCKER=true ./scripts/init_db.sh
       - name: Linting
         run: cargo clippy -- -D warnings
 
@@ -88,6 +117,10 @@ jobs:
           POSTGRES_DB: postgres
         ports:
           - 5432:5432
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -96,7 +129,8 @@ jobs:
         with:
           components: llvm-tools
       - name: Install sqlx-cli
-        run: cargo install sqlx-cli
+        run:
+          cargo install sqlx-cli
           --version=${{ env.SQLX_VERSION }}
           --features ${{ env.SQLX_FEATURES }}
           --no-default-features

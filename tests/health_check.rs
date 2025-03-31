@@ -3,12 +3,12 @@
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use std::net::TcpListener;
 use uuid::Uuid;
-use zero2prod::configuration::{get_configuration, DatabaseSettings};
+use zero2prod::configuration::{DatabaseSettings, get_configuration};
 use zero2prod::startup::run;
 
 pub struct TestApp {
     pub address: String,
-    pub db_pool: PgPool
+    pub db_pool: PgPool,
 }
 
 /// Spin up an instance of our application
@@ -16,44 +16,43 @@ pub struct TestApp {
 async fn spawn_app() -> TestApp {
     // Setting the port to 0 will trigger the OS to scan for an available port and bind it.
     // This will allow us to run tests in parallel for example or run the tests while our main application is running
-    let listener = TcpListener::bind("127.0.0.1:0")
-        .expect("Failed to bind random port");
+    let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
     let port = listener.local_addr().unwrap().port();
     let address = format!("http://127.0.0.1:{}", port);
-    
+
     let mut configuration = get_configuration().expect("Failed to read configuration");
     configuration.database.database_name = Uuid::new_v4().to_string();
     let connection_pool = configure_database(&configuration.database).await;
-    
-    let server = run(listener, connection_pool.clone())
-        .expect("Failed to bind address");
+
+    let server = run(listener, connection_pool.clone()).expect("Failed to bind address");
 
     let _ = tokio::spawn(server);
 
-    TestApp { 
+    TestApp {
         address,
-        db_pool: connection_pool
+        db_pool: connection_pool,
     }
 }
 
 pub async fn configure_database(config: &DatabaseSettings) -> PgPool {
-    let mut connection = PgConnection::connect(
-        &config.connection_string_without_db()
-    ).await.expect("Failed to connect to Postgres");
-    
+    let mut connection = PgConnection::connect(&config.connection_string_without_db())
+        .await
+        .expect("Failed to connect to Postgres");
+
     connection
         .execute(format!(r#"CREATE DATABASE "{}";"#, config.database_name).as_str())
-        .await.expect("Failed to create database");
+        .await
+        .expect("Failed to create database");
 
     let connection_pool = PgPool::connect(&config.connection_string())
         .await
         .expect("Failed to connect to Postgres");
-    
+
     sqlx::migrate!("./migrations")
         .run(&connection_pool)
         .await
         .expect("Failed to migrate the database");
-    
+
     connection_pool
 }
 
@@ -66,7 +65,8 @@ async fn health_check_works() {
     // Act
     let response = client
         .get(&format!("{}/health-check", &app.address))
-        .send().await
+        .send()
+        .await
         .expect("Failed to execute request");
 
     // Assert
@@ -79,7 +79,7 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
     // Arrange
     let app = spawn_app().await;
     let client = reqwest::Client::new();
-    
+
     // Act
     let body = "name=martin&email=martin%40example.com";
     let response = client
@@ -89,10 +89,10 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
         .send()
         .await
         .expect("Failed to execute request.");
-    
+
     // Assert
     assert_eq!(200, response.status().as_u16());
-    
+
     let saved = sqlx::query!("SELECT email, name FROM subscriptions")
         .fetch_one(&app.db_pool)
         .await
@@ -109,12 +109,12 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
     let test_cases = vec![
         ("name=martin", "missing the email"),
         ("email=martin%40example.com", "missing the name"),
-        ("", "missing both name and email")
+        ("", "missing both name and email"),
     ];
-    
+
     for (invalid_body, error_message) in test_cases {
         // Act
-        
+
         let response = client
             .post(&format!("{}/subscriptions", &app.address))
             .header("Content-Type", "application/x-www-form-urlencoded")
@@ -122,7 +122,7 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
             .send()
             .await
             .expect("Failed to execute request.");
-        
+
         assert_eq!(
             400,
             response.status().as_u16(),

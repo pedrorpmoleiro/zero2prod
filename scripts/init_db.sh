@@ -2,11 +2,6 @@
 set -x
 set -eo pipefail
 
-if ! [ -x "$(command -v psql)" ]; then
-  echo >&2 "Error: psql is not installed."
-  exit 1
-fi
-
 if ! [ -x "$(command -v sqlx)" ]; then
   echo >&2 "Error: sqlx is not installed."
   echo >&2 "Use:"
@@ -34,9 +29,9 @@ then
   fi
   CONTAINER_NAME="postgres_$(date '+%s')"
   # Launch postgres using Docker
-  docker run \
-      --env POSTGRES_USER=${SUPERUSER} \
-      --env POSTGRES_PASSWORD=${SUPERUSER_PWD} \
+  podman run \
+      --env POSTGRES_USER="${SUPERUSER}" \
+      --env POSTGRES_PASSWORD="${SUPERUSER_PWD}" \
       --health-cmd="pg_isready -U ${SUPERUSER} || exit 1" \
       --health-interval=1s \
       --health-timeout=5s \
@@ -48,7 +43,7 @@ then
       # ^ Increased maximum number of connections for testing purposes
 
   until [ \
-    "$(docker inspect -f "{{.State.Health.Status}}" ${CONTAINER_NAME})" == \
+    "$(docker inspect -f "{{.State.Health.Status}}" "${CONTAINER_NAME}")" == \
     "healthy" \
   ]; do
     >&2 echo "Postgres is still unavailable - sleeping"

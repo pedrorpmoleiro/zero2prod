@@ -1,17 +1,17 @@
-use actix_web::{web, HttpResponse};
+use actix_web::{HttpResponse, web};
+use chrono::Utc;
 use sqlx::PgPool;
 use uuid::Uuid;
-use chrono::Utc;
 
 #[derive(serde::Deserialize)]
 pub struct SubscribeFormData {
     email: String,
-    name: String
+    name: String,
 }
 
 pub async fn subscribe(
     form: web::Form<SubscribeFormData>,
-    pool: web::Data<PgPool>
+    pool: web::Data<PgPool>,
 ) -> HttpResponse {
     match sqlx::query!(
         r#"
@@ -28,7 +28,7 @@ pub async fn subscribe(
     .execute(pool.get_ref())
     .await
     {
-        Ok(_) => HttpResponse::Ok().finish(), 
+        Ok(_) => HttpResponse::Ok().finish(),
         Err(e) => {
             println!("Failed to execute query: {}", e);
             HttpResponse::InternalServerError().finish()
