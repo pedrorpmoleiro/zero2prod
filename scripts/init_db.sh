@@ -12,7 +12,7 @@ fi
 
 DB_PORT="${DB_PORT:=5432}"
 SUPERUSER="${SUPERUSER:=postgres}"
-SUPERUSER_PWD="${SUPERUSER_PWD:=password}"
+SUPERUSER_PWD="${SUPERUSER_PWD:=123123}"
 APP_USER="${APP_USER:=app}"
 APP_USER_PWD="${APP_USER_PWD:=secret}"
 APP_DB_NAME="${APP_DB_NAME:=newsletter}"
@@ -55,7 +55,7 @@ then
   docker exec -it "${CONTAINER_NAME}" psql -U "${SUPERUSER}" -c "${CREATE_QUERY}"
 
   # Grant create db privileges to the app user
-  GRANT_QUERY="ALTER USER ${APP_USER} CREATEDB;"
+  GRANT_QUERY="ALTER USER ${APP_USER} CREATEDB; GRANT ALL PRIVILEGES ON DATABASE ${APP_DB_NAME} TO ${APP_USER};"
   docker exec -it "${CONTAINER_NAME}" psql -U "${SUPERUSER}" -c "${GRANT_QUERY}"
 fi
 
