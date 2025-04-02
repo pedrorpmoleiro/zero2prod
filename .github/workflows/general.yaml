@@ -131,16 +131,16 @@ jobs:
       - name: Create coverage dir
         run: mkdir ./coverage
       - name: Generate code coverage
-        run: cargo llvm-cov --all-features --workspace --cobertura --output-path ./coverage/coverage.cobertura.xml
+        run: cargo llvm-cov --all-features --workspace --cobertura --output-path ./coverage/cobertura.xml
       - name: Generate report
         run: cargo llvm-cov report --html --output-dir coverage
+      - name: Code Coverage Summary Report
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: coverage/*cobertura.xml
+          badge: true
+          format: markdown
       - uses: actions/upload-artifact@v4
         with:
           name: "Coverage report"
           path: coverage/
-      - name: Use Code Coverage Action
-        uses: KKica/code-coverage@v0.1.0
-        with:
-          code_coverage_artifacts_name: "Coverage report"
-          coverage_directory: coverage
-          coverage_results_path: cobertura.xml
