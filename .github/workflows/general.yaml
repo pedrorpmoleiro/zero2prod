@@ -55,7 +55,7 @@ jobs:
       - name: Run tests
         run: cargo test
       - name: Check that queries are fresh
-        run: cargo sqlx prepare --workspace --check -- --all-targets
+        run: cargo sqlx prepare --workspace --all --check -- --all-targets
 
   fmt:
     name: Rustfmt
@@ -128,10 +128,18 @@ jobs:
         run: SKIP_DOCKER=true ./scripts/init_db.sh
       - name: Install cargo-llvm-cov
         uses: taiki-e/install-action@cargo-llvm-cov
+      - name: Create coverage dir
+        run: mkdir ./coverage
       - name: Generate code coverage
-        run: cargo llvm-cov --all-features --workspace --lcov --output-path lcov.info
+        run: cargo llvm-cov --all-features --workspace --cobertura --output-path ./coverage/cobertura.xml
       - name: Generate report
         run: cargo llvm-cov report --html --output-dir coverage
+      - name: Use Code Coverage Action
+        uses: KKica/code-coverage@v0.1.0
+        with:
+          code_coverage_artifacts_name: "Coverage report"
+          coverage_directory: coverage/
+          coverage_results_path: cobertura.xml
       - uses: actions/upload-artifact@v4
         with:
           name: "Coverage report"
