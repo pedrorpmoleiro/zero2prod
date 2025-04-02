@@ -1,6 +1,6 @@
 name: Rust
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -134,13 +134,13 @@ jobs:
         run: cargo llvm-cov --all-features --workspace --cobertura --output-path ./coverage/cobertura.xml
       - name: Generate report
         run: cargo llvm-cov report --html --output-dir coverage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: "Coverage report"
+          path: coverage/
       - name: Use Code Coverage Action
         uses: KKica/code-coverage@v0.1.0
         with:
           code_coverage_artifacts_name: "Coverage report"
           coverage_directory: coverage/
           coverage_results_path: cobertura.xml
-      - uses: actions/upload-artifact@v4
-        with:
-          name: "Coverage report"
-          path: coverage/
