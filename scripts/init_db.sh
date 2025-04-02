@@ -40,10 +40,10 @@ then
       --detach \
       --name "${CONTAINER_NAME}" \
       postgres:alpine -N 1000
-      # ^ Increased maximum number of connections for testing purposes
+      #                ^ Increased maximum number of connections for testing purposes
 
   until [ \
-    "$(docker inspect -f "{{.State.Health.Status}}" "${CONTAINER_NAME}")" == \
+    "$(podman inspect -f "{{.State.Health.Status}}" "${CONTAINER_NAME}")" == \
     "healthy" \
   ]; do
     >&2 echo "Postgres is still unavailable - sleeping"

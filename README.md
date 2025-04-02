@@ -8,20 +8,7 @@ This repository will host the implementation following the book [Zero to product
 
 ## Web Framework
 
-For this project the `actix-web` was chosen as the go to web framework due to it being aimed at production usage, extensive use and large community.
-
-## Turning the project into a library for testing
-
-After doing the transition of the code into the `lib.rs` file the bellow configurations are no longer required to be added to the `cargo.toml` file for the project and tests to work.
-
-```toml
-[lib]
-path = "src/lib.rs"
-
-[[bin]]
-path = "src/main.rs"
-name = "zero2prod"
-```
+For this project the `actix-web` was chosen as the go-to web framework due to it being aimed at production usage, extensive use and large community.
 
 ## Tools used during development
 
