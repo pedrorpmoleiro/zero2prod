@@ -14,7 +14,7 @@ For this project the `actix-web` was chosen as the go-to web framework due to it
 ## Tools used during development
 
 - [`bacon`](https://dystroy.org/bacon/) in replacement of `cargo-watch` which is no longer maintained. Install with `cargo install bacon`
-- [`cargo-tarpaulin`](https://github.com/xd009642/tarpaulin) to compute code coverage. Install with `cargo install cargo-tarpaulin`
+- `llvm-cov` to compute code coverage.
 - Official `clippy` for linting. Install with `rustup component add clippy`
 - Official `rustfmt` for linting. Install with `rustup component add rustfmt`
 - `cargo-audit` for security vulnerability checking. Install with `cargo install cargo-audit`

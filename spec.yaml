@@ -1,0 +1,47 @@
+# Digital Ocean’s App Platform config file
+name: zero2prod
+# Check https://www.digitalocean.com/docs/app-platform/#regional-availability
+# for a list of all the available options.
+# You can get region slugs from
+# https://www.digitalocean.com/docs/platform/availability-matrix/
+# They must specified lowercased.
+# `fra` stands for Frankfurt (Germany - EU)
+region: fra
+services:
+  - name: zero2prod
+    # Relative to the repository root
+    dockerfile_path: Containerfile
+    source_dir: .
+    github:
+      branch: main
+      deploy_on_push: true
+      repo: pedrorpmoleiro/zero2prod
+    health_check:
+      http_path: /health_check
+    http_port: 8000
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    routes:
+      - path: /
+    envs:
+      - key: APP_DATABASE__USERNAME
+        scope: RUN_TIME
+        value: ${newsletter.USERNAME}
+      - key: APP_DATABASE__PASSWORD
+        scope: RUN_TIME
+        value: ${newsletter.PASSWORD}
+      - key: APP_DATABASE__HOST
+        scope: RUN_TIME
+        value: ${newsletter.HOSTNAME}
+      - key: APP_DATABASE__PORT
+        scope: RUN_TIME
+        value: ${newsletter.PORT}
+      - key: APP_DATABASE__DATABASE_NAME
+        scope: RUN_TIME
+        value: ${newsletter.DATABASE}
+databases:
+  - engine: PG # Postgres
+    name: newsletter
+    num_nodes: 1
+    size: sb-s-dev-database
+    version: "17"

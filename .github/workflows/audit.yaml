@@ -14,5 +14,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: taiki-e/install-action@cargo-deny
-      - name: Scan for vulnerabilities
+      - name: Install cargo-audit
+        run: cargo install --force --locked cargo-audit
+      - name: Scan for vulnerabilities with cargo deny
         run: cargo deny check advisories
+      - name: Scan for vulnerabilities with cargo audit
+        run: cargo audit
