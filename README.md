@@ -2,6 +2,7 @@
 
 [![Rust](https://github.com/pedrorpmoleiro/zero2prod/actions/workflows/general.yaml/badge.svg?event=push)](https://github.com/pedrorpmoleiro/zero2prod/actions/workflows/general.yaml)
 ![Code Coverage](https://img.shields.io/badge/Code%20Coverage-76%25-success?style=flat)
+[![Security audit](https://github.com/pedrorpmoleiro/zero2prod/actions/workflows/audit.yaml/badge.svg)](https://github.com/pedrorpmoleiro/zero2prod/actions/workflows/audit.yaml)
 
 This repository will host the implementation following the book [Zero to production in Rust](https://www.zero2prod.com/index.html).
 
