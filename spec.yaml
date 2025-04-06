@@ -4,7 +4,7 @@ name: zero2prod
 # for a list of all the available options.
 # You can get region slugs from
 # https://www.digitalocean.com/docs/platform/availability-matrix/
-# They must specified lowercased.
+# They must be specified lowercased.
 # `fra` stands for Frankfurt (Germany - EU)
 region: fra
 services:
@@ -17,7 +17,7 @@ services:
       deploy_on_push: true
       repo: pedrorpmoleiro/zero2prod
     health_check:
-      http_path: /health_check
+      http_path: /health-check
     http_port: 8000
     instance_count: 1
     instance_size_slug: basic-xxs
@@ -39,6 +39,9 @@ services:
       - key: APP_DATABASE__DATABASE_NAME
         scope: RUN_TIME
         value: ${newsletter.DATABASE}
+      - key: APP_APPLICATION__BASE_URL
+        scope: RUN_TIME
+        value: ${APP_URL}
 databases:
   - engine: PG # Postgres
     name: newsletter

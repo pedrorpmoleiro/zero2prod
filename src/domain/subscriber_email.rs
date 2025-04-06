@@ -33,6 +33,7 @@ mod tests {
     #[derive(Debug, Clone)]
     struct ValidEmailFixture(pub String);
 
+    // https://github.com/LukeMathWalker/zero-to-production/issues/34
     impl Arbitrary for ValidEmailFixture {
         fn arbitrary(g: &mut Gen) -> Self {
             let mut rng = StdRng::seed_from_u64(u64::arbitrary(g));

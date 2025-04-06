@@ -20,3 +20,16 @@ For this project the `actix-web` was chosen as the go-to web framework due to it
 - Official `rustfmt` for linting. Install with `rustup component add rustfmt`
 - `cargo-audit` for security vulnerability checking. Install with `cargo install cargo-audit`
 - `sqlx-cli` for database migrations. Requires an environment variable with a value like `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`. 
+
+## Container images
+
+[Podman](https://podman.io/) is being used as the container runtime for the development of the project with the goal to also learn Podman native development.
+
+
+Because of this `Containerfile` is being used instead of `Dockerfile`.
+The definition between these two file types are the same and Podman supports both, but `Containerfile` is the official Podman container definition file so it is being used.
+The same goes for `.containerignore` and the Docker equivalent `.dockerignore`.
+
+## Email sending API
+
+The book recommends the use of [Postmark](https://postmarkapp.com/), since now it only offers a free trial I will be using [Mailersend](https://www.mailersend.com/) which offers a free tier with up to 3000 free emails a month.
