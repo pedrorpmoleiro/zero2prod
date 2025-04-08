@@ -23,7 +23,7 @@ impl AsRef<str> for SubscriberEmail {
 #[cfg(test)]
 mod tests {
     use super::SubscriberEmail;
-    use claim::assert_err;
+    use claims::assert_err;
     use fake::Fake;
     use fake::faker::internet::en::SafeEmail;
     use quickcheck::{Arbitrary, Gen};

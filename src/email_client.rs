@@ -83,9 +83,9 @@ struct Email<'a> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::EmailClient;
     use crate::domain::SubscriberEmail;
-    use claim::{assert_err, assert_ok};
+    use claims::{assert_err, assert_ok};
     use fake::faker::internet::en::SafeEmail;
     use fake::faker::lorem::en::{Paragraph, Sentence};
     use fake::{Fake, Faker};

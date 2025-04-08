@@ -38,7 +38,7 @@ impl AsRef<str> for SubscriberToken {
 #[cfg(test)]
 mod tests {
     use super::SubscriberToken;
-    use claim::{assert_err, assert_ok};
+    use claims::{assert_err, assert_ok};
 
     #[test]
     fn whitespace_only_tokens_are_rejected() {

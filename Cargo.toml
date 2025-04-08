@@ -31,6 +31,9 @@ reqwest = { version = "0.12", default-features = false, features = ["json", "rus
 rand = { version = "0.9", features = ["std_rng"] }
 thiserror = "2.0"
 anyhow = "1.0"
+# This crate is a dependency of actix and tracing dependencies
+# Dependent version has been yanked (0.4.1) so manually pinning 0.4.0
+deranged = "=0.4.0"
 
 # Using table-like toml syntax to avoid a super-long line
 [dependencies.sqlx]
@@ -47,7 +50,7 @@ features = [
 
 [dev-dependencies]
 once_cell = "1.21"
-claim = "0.5"
+claims = "0.8"
 fake = "4.2"
 quickcheck = "1.0"
 quickcheck_macros = "1.0"
