@@ -72,3 +72,21 @@ async fn clicking_on_the_confirmation_link_confirms_a_subscriber() {
     assert_eq!(saved.name, "le guin");
     assert_eq!(saved.status, "confirmed");
 }
+
+#[tokio::test]
+async fn confirm_fails_if_subscription_token_doesnt_exist() {
+    // Arrange
+    let app = spawn_app().await;
+    let subscription_token = "a".repeat(25);
+
+    // Act
+    let response = reqwest::get(format!(
+        "{}/subscriptions/confirm?subscription_token={}",
+        app.address, subscription_token
+    ))
+    .await
+    .unwrap();
+
+    // Assert
+    assert_eq!(response.status().as_u16(), 401);
+}

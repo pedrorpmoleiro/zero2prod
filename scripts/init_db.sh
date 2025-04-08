@@ -17,6 +17,10 @@ APP_USER="${APP_USER:=app}"
 APP_USER_PWD="${APP_USER_PWD:=secret}"
 APP_DB_NAME="${APP_DB_NAME:=newsletter}"
 
+# Create the application database
+#DATABASE_URL=postgres://${APP_USER}:${APP_USER_PWD}@localhost:${DB_PORT}/${APP_DB_NAME}
+DATABASE_URL=postgres://${SUPERUSER}:${SUPERUSER_PWD}@localhost:${DB_PORT}/${APP_DB_NAME}
+
 # Allow to skip Docker if a dockerized Postgres database is already running
 if [[ -z "${SKIP_DOCKER}" ]]
 then
@@ -32,6 +36,7 @@ then
   podman run \
       --env POSTGRES_USER="${SUPERUSER}" \
       --env POSTGRES_PASSWORD="${SUPERUSER_PWD}" \
+      --env POSTGRES_DB="${APP_DB_NAME}" \
       --health-cmd="pg_isready -U ${SUPERUSER} || exit 1" \
       --health-interval=1s \
       --health-timeout=5s \
@@ -61,11 +66,8 @@ fi
 
 >&2 echo "Postgres is up and running on port ${DB_PORT} - running migrations now!"
 
-# Create the application database
-DATABASE_URL=postgres://${APP_USER}:${APP_USER_PWD}@localhost:${DB_PORT}/${APP_DB_NAME}
-
 # create the .env file
-echo "DATABASE_URL=$DATABASE_URL" > .env
+#echo "DATABASE_URL=$DATABASE_URL" > .env
 
 export DATABASE_URL
 sqlx database create

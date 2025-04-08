@@ -4,7 +4,6 @@ use crate::routes::*;
 use actix_web::{App, HttpServer, dev::Server, web};
 use sqlx::PgPool;
 use sqlx::postgres::PgPoolOptions;
-
 use std::net::TcpListener;
 use tracing_actix_web::TracingLogger;
 

@@ -5,7 +5,8 @@
     <option name="workingDirectory" value="file://$PROJECT_DIR$" />
     <envs>
       <env name="APP_ENVIRONMENT" value="local" />
-      <env name="RUST_LOG" value="debug" />
+      <env name="RUST_LOG" value="sqlx=error,debug" />
+      <env name="TEST_LOG" value="true" />
     </envs>
     <option name="emulateTerminal" value="true" />
     <option name="channel" value="DEFAULT" />
