@@ -4,8 +4,6 @@ on: [ push, pull_request ]
 
 env:
   CARGO_TERM_COLOR: always
-  #SQLX_VERSION: 0.8.3
-  #SQLX_FEATURES: "rustls,postgres"
   APP_USER: app
   APP_USER_PWD: secret
   APP_DB_NAME: newsletter
@@ -49,7 +47,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 123123
-          POSTGRES_DB: postgres
+          POSTGRES_DB: newsletter
         ports:
           - 5432:5432
       redis:
@@ -67,20 +65,13 @@ jobs:
         uses: taiki-e/install-action@v2
         with:
           tool: cargo-llvm-cov
-      - name: Install cargo-hack from crates.io
+      - name: Install sqlx-cli
         uses: baptiste0928/cargo-install@v3
         with:
           crate: sqlx-cli
           version: '0.8.3'
           features: 'rustls,postgres'
           args: --no-default-features
-      #- name: Install sqlx-cli
-      #  run:
-      #    cargo install sqlx-cli
-      #    --version=${{ env.SQLX_VERSION }}
-      #    --features ${{ env.SQLX_FEATURES }}
-      #    --no-default-features
-      #    --locked
       - name: Create coverage dir
         run: mkdir ./coverage
       - name: Create app user in Postgres

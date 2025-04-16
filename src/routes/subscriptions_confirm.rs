@@ -10,8 +10,8 @@ use uuid::Uuid;
 pub enum ConfirmError {
     #[error("{0}")]
     ValidationError(String),
-    #[error("{0}")]
-    TokenDoesntExist(String),
+    #[error("Subscriber token doesn't exist")]
+    UnknownToken,
     #[error(transparent)]
     UnexpectedError(#[from] anyhow::Error),
 }
@@ -24,7 +24,7 @@ impl ResponseError for ConfirmError {
     fn status_code(&self) -> StatusCode {
         match self {
             Self::ValidationError(_) => StatusCode::BAD_REQUEST,
-            Self::TokenDoesntExist(_) => StatusCode::UNAUTHORIZED,
+            Self::UnknownToken => StatusCode::UNAUTHORIZED,
             Self::UnexpectedError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
@@ -39,7 +39,6 @@ impl From<String> for ConfirmError {
 pub struct Parameters {
     subscription_token: String,
 }
-
 impl TryFrom<Parameters> for SubscriberToken {
     type Error = String;
 
@@ -62,9 +61,7 @@ pub async fn confirm(
     let subscriber_id = get_subscriber_id_from_token(&pool, subscriber_token.as_ref())
         .await
         .context("Failed to fetch subscriber from token.")?
-        .ok_or(ConfirmError::TokenDoesntExist(
-            "Subscriber token doesn't exist".into(),
-        ))?;
+        .ok_or(ConfirmError::UnknownToken)?;
 
     confirm_subscriber(&pool, subscriber_id)
         .await

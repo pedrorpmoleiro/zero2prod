@@ -19,6 +19,14 @@ impl AsRef<str> for SubscriberEmail {
     }
 }
 
+impl std::fmt::Display for SubscriberEmail {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        // We just forward to the Display implementation of
+        // the wrapped String.
+        self.0.fmt(f)
+    }
+}
+
 // Unit Tests
 #[cfg(test)]
 mod tests {
