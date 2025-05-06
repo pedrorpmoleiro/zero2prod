@@ -28,7 +28,6 @@ impl SubscriberToken {
         }
     }
 }
-
 impl AsRef<str> for SubscriberToken {
     fn as_ref(&self) -> &str {
         &self.0

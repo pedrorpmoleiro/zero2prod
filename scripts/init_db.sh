@@ -67,7 +67,7 @@ fi
 >&2 echo "Postgres is up and running on port ${DB_PORT} - running migrations now!"
 
 # create the .env file
-#echo "DATABASE_URL=$DATABASE_URL" > .env
+echo "DATABASE_URL=$DATABASE_URL" > .env
 
 export DATABASE_URL
 sqlx database create

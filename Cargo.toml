@@ -13,11 +13,14 @@ name = "zero2prod"
 
 [dependencies]
 actix-web = "4.10"
-tokio = { version = "1.44", features = ["macros", "rt-multi-thread"] }
+actix-web-flash-messages = { version = "0.5", features = ["cookies"] }
+actix-session = { version = "0.10", features = ["redis-session-rustls"] }
+tokio = { version = "1.45", features = ["macros", "rt-multi-thread"] }
 serde = { version = "1.0", features = ["derive"] }
-serde-aux = "4.6"
+serde-aux = "4.7"
+serde_json = "1.0"
 config = { version = "0.15", features = ["yaml"] }
-uuid = { version = "1", features = ["v4"] }
+uuid = { version = "1", features = ["v4", "serde"] }
 chrono = { version = "0.4", default-features = false, features = ["clock"] }
 tracing = { version = "0.1", features = ["log"] }
 tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
@@ -27,13 +30,11 @@ tracing-actix-web = "0.7"
 secrecy = { version = "0.10", features = ["serde"] }
 unicode-segmentation = "1.12"
 validator = "0.20"
-reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
 rand = { version = "0.9", features = ["std_rng"] }
 thiserror = "2.0"
 anyhow = "1.0"
-# This crate is a dependency of actix and tracing dependencies
-# Dependent version has been yanked (0.4.1) so manually pinning 0.4.0
-deranged = "=0.4.0"
+base64 = "0.22"
+argon2 = { version = "0.5", features = ["std"] }
 
 # Using table-like toml syntax to avoid a super-long line
 [dependencies.sqlx]
@@ -48,12 +49,20 @@ features = [
     "migrate"
 ]
 
+[dependencies.reqwest]
+version = "0.12"
+default-features = false
+features = [
+    "json",
+    "rustls-tls",
+    "cookies"
+]
+
 [dev-dependencies]
 once_cell = "1.21"
 claims = "0.8"
-fake = "4.2"
+fake = "4.3"
 quickcheck = "1.0"
-quickcheck_macros = "1.0"
+quickcheck_macros = "1.1"
 wiremock = "0.6"
-serde_json = "1.0"
 linkify = "0.10"
