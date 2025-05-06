@@ -90,9 +90,7 @@ jobs:
       - name: Run tests with code coverage
         run: cargo llvm-cov --all-features --workspace --cobertura --output-path ./coverage/cobertura.xml
       - name: Generate HTML code coverage report
-        run: |
-          cargo llvm-cov report --workspace --lcov --output-path ./coverage/lcov.info
-          cargo llvm-cov report --workspace --html --output-dir coverage
+        run: cargo llvm-cov report --html --output-dir coverage
       - name: Code Coverage Summary Report
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
